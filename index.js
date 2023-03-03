@@ -7,6 +7,7 @@ const scheduledFunctions = require('./cron');
 const fs = require('fs');
 const indexRoute = require('./routes')
 const homeRoute = require('./routes/home')
+const logerfunc = require('./functions/functions')
 
 ///const  shhclas = require('./shhconnection/ssh')//
 const mathFunctions = require('./shhconnection/sshRequest');
@@ -47,15 +48,20 @@ const port = process.env.PORT || 3000;
 app.listen(port, function () {
   console.log(`App running @ port: ${port}`);
  
-//   var task =cron.schedule(' * * * * * *', ()=>{
-//       console.log("Task has submited successfully")
-//      // app.use(indexRoute)
-//      const sum = mathFunctions.addNumbers(2, 3);
-//      console.log(sum)
-//      console.log ( '[' + new Date().toISOString().substring(11,23) + '] -')
-// //const contes = mathFunctions.connectSSH();
-//    //  console.log(contes)
-//   });
+  var task =cron.schedule(' * * * * * *', ()=>{
+      console.log("Task has submited successfully")
+     // app.use(indexRoute)
+    // const sum = mathFunctions.addNumbers(2, 3);
+   //  console.log(sum)
+  /* logerfunc.getBalanace();
+   logerfunc.getFCP();
+   logerfunc.getLocalBanks();
+   logerfunc.getMNOs();
+   logerfunc.getFetchCharges(); */
+     console.log ( '[' + new Date().toISOString().substring(11,23) + '] -')
+//const contes = mathFunctions.connectSSH();
+   //  console.log(contes)
+  });
   // setTimeout(()=>{
   //   task.start()
   // }, 2000)

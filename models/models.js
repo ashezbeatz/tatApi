@@ -48,14 +48,111 @@ class Post{
           ),
           '%H:%i'
         ) AS interval_range,ROUND(AVG(TurTime) ,2) AS Average,
-        COUNT(*) AS count
+        COUNT(*) AS count, 
+				sum(CASE WHEN statusMessage  like '%Successful%' THEN 1 else 0 end) as Successful,
+				sum(CASE WHEN statusMessage not like '%Successful%' THEN 1 else 0 end) as failed
       FROM turn_a_time
-      
+      where DATE(DbInDate) =CURDATE() and producttype ='balance'
       GROUP BY 
         interval_range`;
 
         return  await db.execute(sqls);
     }
+
+    static async findAllFCP(){
+      let sqls = `SELECT 
+      DATE_FORMAT(
+        FROM_UNIXTIME(
+          FLOOR(UNIX_TIMESTAMP(DbInDate) / 300) * 300
+        ),
+        '%H:%i'
+      ) AS interval_range,ROUND(AVG(TurTime) ,2) AS Average,
+      COUNT(*) AS count, 
+      sum(CASE WHEN statusMessage  like '%Successful%' THEN 1 else 0 end) as Successful,
+      sum(CASE WHEN statusMessage not like '%Successful%' THEN 1 else 0 end) as failed
+    FROM turn_a_time
+    where DATE(DbInDate) =CURDATE() and producttype ='FCP'
+    GROUP BY 
+      interval_range`;
+
+      return  await db.execute(sqls);
+  }
+
+    static async findAllMNOs(){
+      let sqls = `SELECT 
+      DATE_FORMAT(
+        FROM_UNIXTIME(
+          FLOOR(UNIX_TIMESTAMP(DbInDate) / 300) * 300
+        ),
+        '%H:%i'
+      ) AS interval_range,ROUND(AVG(TurTime) ,2) AS Average,
+      COUNT(*) AS count, 
+      sum(CASE WHEN statusMessage  like '%Successful%' THEN 1 else 0 end) as Successful,
+      sum(CASE WHEN statusMessage not like '%Successful%' THEN 1 else 0 end) as failed
+    FROM turn_a_time
+    where DATE(DbInDate) =CURDATE() and producttype ='MNOs'
+    GROUP BY 
+      interval_range`;
+
+      return  await db.execute(sqls);
+  }
+  static async findAlllocal_banks(){
+    let sqls = `SELECT 
+    DATE_FORMAT(
+      FROM_UNIXTIME(
+        FLOOR(UNIX_TIMESTAMP(DbInDate) / 300) * 300
+      ),
+      '%H:%i'
+    ) AS interval_range,ROUND(AVG(TurTime) ,2) AS Average,
+    COUNT(*) AS count, 
+    sum(CASE WHEN statusMessage  like '%Successful%' THEN 1 else 0 end) as Successful,
+    sum(CASE WHEN statusMessage not like '%Successful%' THEN 1 else 0 end) as failed
+  FROM turn_a_time
+  where DATE(DbInDate) =CURDATE() and producttype ='local_banks'
+  GROUP BY 
+    interval_range`;
+
+    return  await db.execute(sqls);
+}
+  static async findAllfetch_charges(){
+    let sqls = `SELECT 
+    DATE_FORMAT(
+      FROM_UNIXTIME(
+        FLOOR(UNIX_TIMESTAMP(DbInDate) / 300) * 300
+      ),
+      '%H:%i'
+    ) AS interval_range,ROUND(AVG(TurTime) ,2) AS Average,
+    COUNT(*) AS count, 
+    sum(CASE WHEN statusMessage  like '%Successful%' THEN 1 else 0 end) as Successful,
+    sum(CASE WHEN statusMessage not like '%Successful%' THEN 1 else 0 end) as failed
+  FROM turn_a_time
+  where DATE(DbInDate) =CURDATE() and producttype ='fetch_charges'
+  GROUP BY 
+    interval_range`;
+
+    return  await db.execute(sqls);
+}
+
+static async findOneData(affiliate,producttype){
+  let sqls = `SELECT 
+    DATE_FORMAT(
+      FROM_UNIXTIME(
+        FLOOR(UNIX_TIMESTAMP(DbInDate) / 300) * 300
+      ),
+      '%H:%i'
+    ) AS interval_range,ROUND(AVG(TurTime) ,2) AS Average,
+    COUNT(*) AS count, 
+    sum(CASE WHEN statusMessage  like '%Successful%' THEN 1 else 0 end) as Successful,
+    sum(CASE WHEN statusMessage not like '%Successful%' THEN 1 else 0 end) as failed
+  FROM turn_a_time
+  where DATE(DbInDate) =CURDATE() and UPPER(producttype) =UPPER('${producttype}') and UPPER(affiliateCode) = UPPER('${affiliate}')
+  GROUP BY 
+    interval_range`;
+///console.log(`quesries ${sqls}`)
+    return  await db.execute(sqls);
+
+}
+
 
 }
 
