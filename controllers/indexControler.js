@@ -135,7 +135,7 @@ class IndexController{
       let product = req.params.producttype;
      // let affilateCode = req.query.affilicatecode;
       //let product = req.query.producttype;
-      console.log(affilateCode,product);
+      //console.log(affilateCode,product);
      // console.log(req);
 
      if(product==='balance'){
