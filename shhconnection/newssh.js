@@ -280,6 +280,92 @@ const util = require('util');
 
   
 
+  async function newgetddnewsSSHScript(path, arrysLists, afifliate, affcode, transtype) {
+    return new Promise((resolve, reject) => {
+      const conn = new Client();
+      conn.on('error', (err) => {
+        console.error('An error occurred:', err);
+        reject(err);
+      });
+      conn.on('ready', async function() {
+        console.log('Client :: ready');
+        const paths = process.env.HOSTPATH + path;
+        console.log('paths ', paths);
+        console.log('params ', arrysLists);
+        const scriptArgs = arrysLists;
+        console.log("arry join "+scriptArgs.join(' '))
+        try {
+          const stream = await conn.exec(`bash ${paths} ${scriptArgs.join(' ')}`);
+          stream.on('data', function(data) {
+            console.log('STDOUT: ' + data);
+            output += data;
+          }).stderr.on('data', function(data) {
+            console.log('STDERR: ' + data);
+          }).on('close', async function(code) {
+            console.log('Script exited with code ' + code);
+            // ... the rest of your code
+            const jsonStartIndex = output.indexOf('{');
+            const jsonEndIndex = output.lastIndexOf('}') + 1;
+            const jsonString = output.slice(jsonStartIndex, jsonEndIndex);
+            const valueString = output.substring(jsonEndIndex).trim(); // Extract the string value and remove any leading/trailing whitespace
+            console.log(` TAT value ${valueString}`); // Output: "Total time: 1.250697 seconds"
+            // const match = valueString.match(/Total time: (\d+\.\d+) seconds/);
+            const match = valueString.match(/(\d+\.\d+) seconds/);
+            let totalTime;
+            if (match) {
+              totalTime = match[1];
+              console.log(`TAT new value: ${totalTime}`); // Output: 1.250697
+            }else{
+              totalTime =0
+            }
+          
+            try {
+              const jsonObject2 = JSON.parse(jsonString);
+              console.log('JSON is valid');
+              console.log(jsonObject2);
+              const statusMessage = jsonObject2.statusMessage;
+              console.log(`status message ${statusMessage}`);
+              const messages = jsonObject2.result.message;
+              console.log(`response message ${messages}`);
+              let post = new Post(afifliate, affcode, totalTime, statusMessage, transtype, messages);
+              post = await post.save();
+              console.log(post);
+            } catch (error) {
+              console.log('JSON is not valid');
+              // console.log(jsonString);
+              let post = new Post(afifliate, affcode, totalTime, "Time out", transtype, "Time out");
+              post = await post.save();
+              console.log(post);
+            }
+          
+            try {
+              const jsonObject = JSON.parse(output);
+              console.log('Output is valid JSON');
+              console.log(jsonObject);
+            } catch (error) {
+              console.log('Output is not valid JSON');
+            }
+          
+
+            conn.end();
+            resolve();
+          });
+        } catch (err) {
+          console.log('Error executing command:', err);
+          reject(err);
+        }
+      });
+      conn.connect({
+        host: process.env.HOST,
+        port: process.env.SSHPORT,
+        username: process.env.USERNAME,
+        password: process.env.PASSWORD,
+        strictVendor: false,
+        hostVerifier: () => true
+      });
+    });
+  }
+
 
   // Export the functions
   module.exports = {
@@ -287,6 +373,7 @@ const util = require('util');
    // getFileFromSftp : getFileFromSftp,
     newgetSSHScript : newgetSSHScript,
     SSHScriptmys : SSHScriptmys,
-    newgetddSSHScript : newgetddSSHScript
+    newgetddSSHScript : newgetddSSHScript,
+    newgetddnewsSSHScript : newgetddnewsSSHScript
    
   }; 
