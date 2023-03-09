@@ -48,22 +48,22 @@ const port = process.env.PORT || 3000;
 app.listen(port, function () {
   console.log(`App running @ port: ${port}`);
  
-    var task =cron.schedule(' * * * * * *', ()=>{
+   /* var task =cron.schedule(' * * * * * *', ()=>{
         console.log("Task has submited successfully")
        // logerfunc.getFetchCharges()
       // app.use(indexRoute)
       // const sum = mathFunctions.addNumbers(2, 3);
     //  console.log(sum)
    // logerfunc.getBalanace();
-    /* logerfunc.getBalanace();
+    logerfunc.getBalanace();
     logerfunc.getFCP();
     logerfunc.getLocalBanks();
     logerfunc.getMNOs();
-    logerfunc.getFetchCharges(); */
+    logerfunc.getFetchCharges();
       console.log ( '[' + new Date().toISOString().substring(11,23) + '] -')
   //const contes = mathFunctions.connectSSH();
     //  console.log(contes)
-    });
+    });*/
   // setTimeout(()=>{
   //   task.start()
   // }, 2000)

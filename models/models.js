@@ -41,6 +41,8 @@ class Post{
 
 
     static async findAll(){
+      try {
+      const connection = await db.getConnection();
         let sqls = `SELECT 
         DATE_FORMAT(
           FROM_UNIXTIME(
@@ -55,11 +57,21 @@ class Post{
       where DATE(DbInDate) =CURDATE() and producttype ='balance'
       GROUP BY 
         interval_range`;
-
-        return  await db.execute(sqls);
+        const [rows] = await  connection.execute(sqls);
+       // return  await db.execute(sqls);
+       
+       connection.release();
+     // return await  connection.execute(sqls);
+     return rows.length ? [rows] : [[]];
+    } catch (error) {
+      console.error(error);
+      return [[]];
     }
+ }
 
     static async findAllFCP(){
+      try {
+        const connection = await db.getConnection();
       let sqls = `SELECT 
       DATE_FORMAT(
         FROM_UNIXTIME(
@@ -75,10 +87,23 @@ class Post{
     GROUP BY 
       interval_range`;
 
-      return  await db.execute(sqls);
+      //return  await db.execute(sqls);
+      const [rows] = await  connection.execute(sqls);
+      // return  await db.execute(sqls);
+      
+      connection.release();
+    // return await  connection.execute(sqls);
+    return rows.length ? [rows] : [[]];
+   } catch (error) {
+     console.error(error);
+     return [[]];
+   }
+
   }
 
     static async findAllMNOs(){
+      try {
+        const connection = await db.getConnection();
       let sqls = `SELECT 
       DATE_FORMAT(
         FROM_UNIXTIME(
@@ -94,9 +119,22 @@ class Post{
     GROUP BY 
       interval_range`;
 
-      return  await db.execute(sqls);
+     // return  await db.execute(sqls);
+     const [rows] = await  connection.execute(sqls);
+     // return  await db.execute(sqls);
+     
+     connection.release();
+   // return await  connection.execute(sqls);
+   return rows.length ? [rows] : [[]];
+  } catch (error) {
+    console.error(error);
+    return [[]];
+  }
+  
   }
   static async findAlllocal_banks(){
+    try {
+      const connection = await db.getConnection();
     let sqls = `SELECT 
     DATE_FORMAT(
       FROM_UNIXTIME(
@@ -112,9 +150,22 @@ class Post{
   GROUP BY 
     interval_range`;
 
-    return  await db.execute(sqls);
+  //  return  await db.execute(sqls);
+  const [rows] = await  connection.execute(sqls);
+  // return  await db.execute(sqls);
+  
+  connection.release();
+// return await  connection.execute(sqls);
+return rows.length ? [rows] : [[]];
+} catch (error) {
+ console.error(error);
+ return [[]];
+}
+
 }
   static async findAllfetch_charges(){
+    try {
+      const connection = await db.getConnection(); 
     let sqls = `SELECT 
     DATE_FORMAT(
       FROM_UNIXTIME(
@@ -130,10 +181,24 @@ class Post{
   GROUP BY 
     interval_range`;
 
-    return  await db.execute(sqls);
+    //return  await db.execute(sqls);
+
+    const [rows] = await  connection.execute(sqls);
+    // return  await db.execute(sqls);
+    
+    connection.release();
+  // return await  connection.execute(sqls);
+  return rows.length ? [rows] : [[]];
+  } catch (error) {
+   console.error(error);
+   return [[]];
+  }
+
 }
 
 static async findOneData(affiliate,producttype){
+  try {
+    const connection = await db.getConnection(); 
   let sqls = `SELECT 
     DATE_FORMAT(
       FROM_UNIXTIME(
@@ -149,7 +214,19 @@ static async findOneData(affiliate,producttype){
   GROUP BY 
     interval_range`;
 ///console.log(`quesries ${sqls}`)
-    return  await db.execute(sqls);
+   // return  await db.execute(sqls);
+
+
+   const [rows] = await  connection.execute(sqls);
+   // return  await db.execute(sqls);
+   
+   connection.release();
+ // return await  connection.execute(sqls);
+ return rows.length ? [rows] : [[]];
+ } catch (error) {
+  console.error(error);
+  return [[]];
+ }
 
 }
 
