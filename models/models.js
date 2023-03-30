@@ -43,6 +43,8 @@ class Post{
     static async findAll(){
       try {
       const connection = await db.getConnection();
+      await connection.execute('SET GLOBAL max_prepared_stmt_count = 200'); // set max_prepared_stmt_count dynamically
+   
         let sqls = `SELECT 
         DATE_FORMAT(
           FROM_UNIXTIME(
@@ -104,6 +106,8 @@ class Post{
     static async findAllMNOs(){
       try {
         const connection = await db.getConnection();
+        await connection.execute('SET GLOBAL max_prepared_stmt_count = 200'); // set max_prepared_stmt_count dynamically
+   
       let sqls = `SELECT 
       DATE_FORMAT(
         FROM_UNIXTIME(
@@ -135,6 +139,8 @@ class Post{
   static async findAlllocal_banks(){
     try {
       const connection = await db.getConnection();
+      await connection.execute('SET GLOBAL max_prepared_stmt_count = 200'); // set max_prepared_stmt_count dynamically
+   
     let sqls = `SELECT 
     DATE_FORMAT(
       FROM_UNIXTIME(
@@ -199,6 +205,8 @@ return rows.length ? [rows] : [[]];
 static async findOneData(affiliate,producttype){
   try {
     const connection = await db.getConnection(); 
+    await connection.execute('SET GLOBAL max_prepared_stmt_count = 200'); // set max_prepared_stmt_count dynamically
+   
   let sqls = `SELECT 
     DATE_FORMAT(
       FROM_UNIXTIME(

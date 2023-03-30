@@ -24,6 +24,7 @@
     "mysql2": "^3.1.2",
     "node-cron": "^3.0.2",
     "node-flywaydb": "^3.0.7",
+    "react-auth-kit": "^2.8.2",
     "ssh2": "^1.11.0",
     "ssh2-sftp-client": "^9.0.4",
     "uuid": "^9.0.0"

@@ -43,7 +43,7 @@ class IndexController{
    //var list = JSON.parse(process.env.fetch_MNOs_ghana_PAYLOAD)
   //eng
   ///const myData2 =  newFuncs.newgetSSHScript(process.env.BAL_ENG_PATH,func.arrayFunc(process.env.BAL_ENG_PAYLOAD),process.env.AFFILIATE_NG,process.env.AFFILIATE_CODE_NG,'balance')
-  //func.getBalanace()
+  func.getBalanace()
          // const mydat = mathFunctions.checkData();
             res.send("Hello from Index Controller")
         
