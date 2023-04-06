@@ -3,6 +3,7 @@ require("dotenv").config();
 let conn = new Client();
 
 function createConnection() {
+  console.log("host"+ process.env.HOST)
   return new Promise((resolve, reject) => {
     conn.on('error', (err) => {
         console.error('An error occurred:', err);
@@ -22,7 +23,8 @@ function createConnection() {
         username: process.env.USERNAME,
         password: process.env.PASSWORD,
         strictVendor: false,
-        hostVerifier: () => true
+        hostVerifier: () => true,
+        allowHalfOpen: true,
     });
   });
 }

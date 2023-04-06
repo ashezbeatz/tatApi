@@ -1,4 +1,5 @@
-const Post = require('../models/models')
+const Post = require('../models/models');
+const InsertData = require('../models/insermodels')
 const mathFunctions = require('../shhconnection/sshRequest');
 
 const myFunctions  = require('../shhconnection/shhtest');
@@ -24,26 +25,7 @@ class IndexController{
      console.log(sum)
      console.log(product)
      console.log(product2)
-     
-    //const sende = mathFunctions.getSSHRequest(paths,myArray)
-    
-         //  console.log(sende);
-    
-    //const newdata =  mathFunctions.newgetSSHScrip(paths,myArray)
-    //console.log(" response : "+newdata);
-    
-    
-   //const myData =  newFuncs.newgetSSHScript(paths,myArray,'cm','ECM','balance')
-   //const pamdddd =[process.env.BAL_ENG_PATH]
-   //var festivals = process.env.BAL_ENG_PAYLOAD.split(", ");
-   
-   //var festivals = func.arrayFunc(process.env.BAL_ENG_PAYLOAD);
-
-   //console.log("asdsdasd"+process.env.fetch_MNOs_ghana_PAYLOAD)
-   //var list = JSON.parse(process.env.fetch_MNOs_ghana_PAYLOAD)
-  //eng
-  ///const myData2 =  newFuncs.newgetSSHScript(process.env.BAL_ENG_PATH,func.arrayFunc(process.env.BAL_ENG_PAYLOAD),process.env.AFFILIATE_NG,process.env.AFFILIATE_CODE_NG,'balance')
-  func.getBalanace()
+    //  func.getBalanace()
          // const mydat = mathFunctions.checkData();
             res.send("Hello from Index Controller")
         
@@ -68,10 +50,41 @@ class IndexController{
     static mytest(req,res){
       // const dats = myTestFunc.pushDataTest()
       //const dats =  myFunctions.multiplyNumbers(2, 3);
-      const dats = myFunctions.pushDataTest()
+      //const dats = myFunctions.pushDataTest()
         res.send("From Test of Controller")
     }
 
+    static async PostData2(req, res,next){
+      //console.log(req)
+      try{
+      let {affiliate,affcode,totalTime,statusMessage,transtype,messages} = req.body;
+     // console.log(affiliate)
+      let psData = new Post(affiliate,affcode,totalTime,statusMessage,transtype,messages)
+      psData = await psData.save()
+      console.log(psData)
+      res.status(201).json({message :'Data saved successfully'})
+    }catch(error){
+      console.log(error)
+      next(error)
+    }
+     // res.send("Post Data")
+    }
+
+    static async PostData(req, res,next){
+      //console.log(req)
+      try{
+      let {affiliate,affcode,totalTime,statusMessage,transtype,messages} = req.body;
+     // console.log(affiliate)
+      let psData = new InsertData(affiliate,affcode,totalTime,statusMessage,transtype,messages)
+      psData = await psData.getData()
+      console.log(psData);
+      res.status(201).json({message :'Data saved successfully'})
+    }catch(error){
+      console.log(error)
+      next(error)
+    }
+     // res.send("Post Data")
+    }
     static async getBalanceEnquiry(req, res,next){
 
         try {

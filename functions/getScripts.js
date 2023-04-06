@@ -1,13 +1,15 @@
 require("dotenv").config();
 
 const myfuncts = require('./pusdata');
+const myFunctions  = require('../shhconnection/newssh');
+
+const newsshhhe = require('../shhconnection/sshnewCons')
+
+const nessssss = require('../shhconnection/shhconsdd')
+const { SSH } =  require('../shhconnection/new SSH.js')
 
 
-
-
-
-
-function runDataSh(){
+async function runDataSh(){
     console.log(`payload path ${process.env.BAL_ENG_PATH}`)
     console.log(`payload array ${process.env.BAL_ENG_PAYLOAD}`) 
 
@@ -64,7 +66,7 @@ function runDataSh(){
         // Add as many scripts as needed
             ///FCP
             //ENG
-            { script: `${process.env.check_FCP_nigeria}`, params: myArrayFCPENG  ,affiliate: process.env.AFFILIATE_NG,affcode:process.env.AFFILIATE_CODE_NG,transtype:'FCP'  },
+     /*       { script: `${process.env.check_FCP_nigeria}`, params: myArrayFCPENG  ,affiliate: process.env.AFFILIATE_NG,affcode:process.env.AFFILIATE_CODE_NG,transtype:'FCP'  },
             //AWA
             { script: `${process.env.check_FCP_ghana}`, params: myArrayFCPEGH  ,affiliate: process.env.AFFILIATE_GH,affcode:process.env.AFFILIATE_CODE_GH,transtype:'FCP'  },
             { script: `${process.env.check_FCP_gambia}`, params: arrayFunc(process.env.check_FCP_gambia_PAYLOAD)  ,affiliate: process.env.AFFILIATE_EGM,affcode:process.env.AFFILIATE_CODE_EGM,transtype:'FCP'  },
@@ -231,7 +233,7 @@ function runDataSh(){
               { script: `${process.env.fetch_charges_cg}`, params: arrayFunc(process.env.fetch_charges_cg_PAYLOAD)  ,affiliate: process.env.AFFILIATE_ECG,affcode:process.env.AFFILIATE_CODE_ECG,transtype:'fetch_charges'  },
               { script: `${process.env.fetch_charges_gn}`, params: arrayFunc(process.env.fetch_charges_gn_PAYLOAD)  ,affiliate: process.env.AFFILIATE_EGN,affcode:process.env.AFFILIATE_CODE_EGN,transtype:'fetch_charges'  },
         
- 
+ */
 
               
 
@@ -239,11 +241,71 @@ function runDataSh(){
         ///
       ];
 
-      myfuncts.runShellScriptsBalance(scripts);
+      const ssh = new SSH();
+      try {
+        for (const scriptd of scripts) {
+          const { script, params,affiliate,affcode,transtype } = scriptd;
+          const fullPath = process.env.HOSTPATH + script;
+         const scriptArgs = params.join(' ');
+         console.log(`command ${fullPath} ${scriptArgs}`)
+          myFunctions.newgetddnewsSSHScript(script,params,affiliate,affcode,transtype);
+         
+         // const output = await ssh.exec(`bash ${fullPath} ${scriptArgs}`,affiliate, affcode, transtype);
+          // process output and handle errors here
+          //console.log("new outputs :"+ output)
+
+
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+      } finally {
+        ssh.end();
+      }
+
+      // for (const script of scripts) {
+      //   const { path, params,affiliate,affcode,transtype } = script;
+      //   try {
+      //     await nessssss.runScript(path, params);
+      //   } catch (error) {
+      //     console.error(`Error running script ${path}:`, error);
+      //   }
+      // }
+      // runScript
+     // myfuncts.runShellScriptsBalance(scripts);
+    // myFunctions.newgetddnewsArrayTimeoutSSHScript(scripts);
+  
+    // newsshhhe.executeScriptsnesd2(scripts,myCallback);
+    // newsshhhe.executeScriptsnesd2(scripts, (err) => {
+    //   if (err) {
+    //     console.log(`Error executing scripts: ${err.message}`);
+    //   } else {
+    //     console.log(`Scripts executed successfully.`);
+    //   }
+    // })
+    ///nessssss.newgetddnewsSSHScript(scripts);
+    //newsshhhe.executeScriptsnes2(scripts)
+    //.then(() => console.log('All scripts executed successfully.'))
+    //.catch(err => console.error(`Error executing scripts: ${err}`));
+    // newsshhhe.executeScriptsd2(scripts)
+    //newsshhhe.executeScriptsnes2(scripts)
+    //newsshhhe.executePromiseScripts(scripts)
+    //newsshhhe.executeScriptsd2(scripts)
+    // newsshhhe.executeScriptsnew2(scripts)
+    // newsshhhe.executeScriptsNew(scripts)
+    // newsshhhe.executeScripts2(scripts)
+   //newsshhhe.newConst(scripts)
+   // .then(() => console.log('All scripts executed successfully.'))
+  //.catch(err => console.error(`Error executing scripts: ${err}`));
 }
 
 
-
+function myCallback(err, result) {
+  if (err) {
+    console.error(`Error: ${err.message}`);
+  } else {
+    console.log(`Result: ${result}`);
+  }
+}
 
 function arrayFunc(data){
     var festivals = data.split(", ");

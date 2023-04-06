@@ -15,7 +15,8 @@ async function getSession() {
   return session;
 }
 
-async function runShellScriptsBalance(scripts) {
+
+async function runShellScriptsBalance2222(scripts) {
    
     const session = await getSession();
     if (!session) {
@@ -107,6 +108,79 @@ async function runShellScriptsBalance(scripts) {
 });
       
 }
+
+async function runShellScriptsBalance(scripts) {
+    const session = await getSession();
+    if (!session) {
+      console.error('Error establishing SSH connection');
+      return;
+    }
+   
+    return new Promise((resolve, reject) => {
+      const extraOpts = {
+        allowHalfOpen: true
+      };
+      scripts.forEach(async (script) => {
+        console.log(`${process.env.HOSTPATH}${script.script} ${script.params.join(' ')}`);
+        try {
+          const stream = await session.conn.exec(`bash ${process.env.HOSTPATH}${script.script} ${script.params.join(' ')}`, extraOpts);
+          let output = '';
+          stream.on('data', function(data) {
+            console.log('STDOUT: ' + data);
+            output += data;
+          }).stderr.on('data', function(data) {
+            console.log('STDERR: ' + data);
+          }).on('close', async function(code) {
+            console.log('Script exited with code ' + code);
+            const jsonStartIndex = output.indexOf('{');
+            const jsonEndIndex = output.lastIndexOf('}') + 1;
+            const jsonString = output.slice(jsonStartIndex, jsonEndIndex);
+            const valueString = output.substring(jsonEndIndex).trim();
+            console.log(` TAT value ${valueString}`);
+            const match = valueString.match(/(\d+\.\d+) seconds/);
+            let totalTime;
+            if (match) {
+              totalTime = match[1];
+              console.log(`TAT new value: ${totalTime}`);
+            } else {
+              totalTime = 0;
+            }
+            try {
+              const jsonObject2 = JSON.parse(jsonString);
+              console.log('JSON is valid');
+              console.log(jsonObject2);
+              const statusMessage = jsonObject2.statusMessage;
+              console.log(`status message ${statusMessage}`);
+              const messages = jsonObject2.result.message;
+              console.log(`response message ${messages}`);
+              let post = new Post(script.afifliate, script.affcode, totalTime, statusMessage, script.transtype, messages);
+              post = await post.save();
+              console.log(post);
+            } catch (error) {
+              console.log('JSON is not valid');
+              let post = new Post(script.afifliate, script.affcode, totalTime, "Time out",script.transtype, "Time out");
+              post = await post.save();
+              console.log(post);
+            }
+            try {
+              const jsonObject = JSON.parse(output);
+              console.log('Output is valid JSON');
+              console.log(jsonObject);
+            } catch (error) {
+              console.log('Output is not valid JSON');
+            }
+          });
+        } catch (err) {
+          console.log('Error executing command:', err);
+          reject(err);
+        }
+      });
+      session.conn.on('close', () => {
+        console.log('SSH connection closed');
+        resolve();
+      });
+    });
+  }
 
 
 

@@ -179,7 +179,7 @@ const util = require('util');
   }
   
 
-
+////godsssssss
   async function newgetddSSHScript(path, arrysLists, afifliate, affcode, transtype) {
     return new Promise((resolve, reject) => {
       const conn = new Client();
@@ -279,7 +279,7 @@ const util = require('util');
 
 
   
-//////////////////////////////////////////////////// 
+////////////////////////working//////////////////////////// 
 // 
 async function newgetddnewsSSHScriptsn(path, arrysLists, afifliate, affcode, transtype) {
   return new Promise((resolve, reject) => {
@@ -488,7 +488,7 @@ async function newgetddnewsTimeoutSSHScript(path, arrysLists, afifliate, affcode
 } 
 ///////////////////////////////////////////////////
 
-///////////////////////////////////////////////////
+//////////////////////////workingssssss/////////////////////////
 
   async function newgetddnewsSSHScript(path, arrysLists, afifliate, affcode, transtype) {
     return new Promise((resolve, reject) => {
@@ -515,6 +515,12 @@ async function newgetddnewsTimeoutSSHScript(path, arrysLists, afifliate, affcode
           }).on('close', async function(code) {
             console.log('Script exited with code ' + code);
             // ... the rest of your code
+            if (!output.trim()) {
+              console.log('Script output is empty');
+            }else{
+
+              //controlller
+        
             const jsonStartIndex = output.indexOf('{');
             const jsonEndIndex = output.lastIndexOf('}') + 1;
             const jsonString = output.slice(jsonStartIndex, jsonEndIndex);
@@ -556,7 +562,10 @@ async function newgetddnewsTimeoutSSHScript(path, arrysLists, afifliate, affcode
             } catch (error) {
               console.log('Output is not valid JSON');
             }
-          
+         
+            
+          }
+            //new endssss
 
             conn.end();
             resolve();
@@ -566,18 +575,299 @@ async function newgetddnewsTimeoutSSHScript(path, arrysLists, afifliate, affcode
           reject(err);
         }
       });
+      console.log("host "+ process.env.HOST);
+      conn.connect({
+        
+        host: process.env.HOST,
+        port: process.env.SSHPORT,
+        username: process.env.USERNAME,
+        password: process.env.PASSWORD,
+        strictVendor: false,
+        hostVerifier: () => true,
+        allowHalfOpen: false 
+      });
+    });
+  }
+
+
+
+
+  async function updatenewgetddnewsSSHScript(path, arrysLists, afifliate, affcode, transtype) {
+    return new Promise((resolve, reject) => {
+      const conn = new Client();
+      conn.on('error', (err) => {
+        console.error('An error occurred:', err);
+        reject(err);
+      });
+      conn.on('ready', async function() {
+        console.log('Client :: ready');
+        const paths = process.env.HOSTPATH + path;
+        console.log('paths ', paths);
+        console.log('params ', arrysLists);
+        const scriptArgs = arrysLists;
+        console.log("arry join "+scriptArgs.join(' '))
+  
+        try {
+          const stream = await conn.exec(`bash ${paths} ${scriptArgs.join(' ')}`);
+          let output = ''; // initialize output variable
+          stream.on('data', function(data) {
+            console.log('STDOUT: ' + data);
+            output += data;
+          }).stderr.on('data', function(data) {
+            console.log('STDERR: ' + data);
+          }).on('close', async function(code) {
+            console.log('Script exited with code ' + code);
+            // ... the rest of your code
+            if (!output.trim()) {
+              console.log('Script output is empty');
+            } else {
+              // controller code
+              // ...
+            }
+            conn.end();
+            resolve();
+          });
+        } catch (err) {
+          console.log('Error executing command:', err);
+          reject(err);
+        }
+      });
+      console.log("host "+ process.env.HOST);
       conn.connect({
         host: process.env.HOST,
         port: process.env.SSHPORT,
         username: process.env.USERNAME,
         password: process.env.PASSWORD,
         strictVendor: false,
-        hostVerifier: () => true
+        hostVerifier: () => true,
+        allowHalfOpen: false 
       });
+    }).catch((err) => {
+      console.error('Unhandled promise rejection:', err);
+      // handle the rejection here
     });
   }
 
 
+
+  //////new testerssss
+
+  async function newgetddnewsArrayTimeoutSSHScript(scripts){
+
+
+    return new Promise((resolve, reject) => {
+        const conn = new Client();
+        let output = '';
+        let timeoutId;
+        let timeout =10000;
+        const extraOpts = {
+          allowHalfOpen: true
+        };
+        conn.setMaxListeners(30); // Set maximum number of listeners to 30
+
+        
+    
+        conn.on('error', (err) => {
+          console.error('An error occurred:', err);
+          clearTimeout(timeoutId);
+          reject(err);
+        //  conn.end();
+        });
+    
+        conn.on('ready', async function() {
+          console.log('Client :: ready');
+          const paths = process.env.HOSTPATH;
+           console.log('paths ', paths);
+        //   console.log('params ', arrysLists);
+        //   const scriptArgs = arrysLists;
+        //   console.log("arry join "+scriptArgs.join(' '))
+
+        scripts.forEach(async (script) => {
+            console.log(`${process.env.HOSTPATH}${script.script} ${script.params.join(' ')}`);
+            try {
+              const stream = await conn.exec(`bash ${process.env.HOSTPATH}${script.script} ${script.params.join(' ')}`, extraOpts);
+              stream.setMaxListeners(20); // set the maximum number of listeners to 20
+              let output = '';
+              stream.on('data', function(data) {
+                console.log('STDOUT: ' + data);
+                output += data;
+              }).stderr.on('data', function(data) {
+                console.log('STDERR: ' + data);
+              }).on('close', async function(code) {
+                console.log('Script exited with code ' + code);
+                const jsonStartIndex = output.indexOf('{');
+                const jsonEndIndex = output.lastIndexOf('}') + 1;
+                const jsonString = output.slice(jsonStartIndex, jsonEndIndex);
+                const valueString = output.substring(jsonEndIndex).trim();
+                console.log(` TAT value ${valueString}`);
+                const match = valueString.match(/(\d+\.\d+) seconds/);
+                let totalTime;
+                if (match) {
+                  totalTime = match[1];
+                  console.log(`TAT new value: ${totalTime}`);
+                } else {
+                  totalTime = 0;
+                }
+                try {
+                  const jsonObject2 = JSON.parse(jsonString);
+                  console.log('JSON is valid');
+                  console.log(jsonObject2);
+                  const statusMessage = jsonObject2.statusMessage;
+                  console.log(`status message ${statusMessage}`);
+                  const messages = jsonObject2.result.message;
+                  console.log(`response message ${messages}`);
+                  let post = new Post(script.afifliate, script.affcode, totalTime, statusMessage, script.transtype, messages);
+                  post = await post.save();
+                  console.log(post);
+                } catch (error) {
+                  console.log('JSON is not valid');
+                  let post = new Post(script.afifliate, script.affcode, totalTime, "Time out",script.transtype, "Time out");
+                  post = await post.save();
+                  console.log(post);
+                }
+                try {
+                  const jsonObject = JSON.parse(output);
+                  console.log('Output is valid JSON');
+                  console.log(jsonObject);
+                } catch (error) {
+                  console.log('Output is not valid JSON');
+                }
+              });
+            } catch (err) {
+              console.log('Error executing command:', err);
+              reject(err);
+            }
+          });
+          conn.on('close', () => {
+            console.log('SSH connection closed');
+            conn.end();
+            resolve();
+          });
+
+          ////end
+        });
+    
+        conn.connect({
+          host: process.env.HOST,
+          port: process.env.SSHPORT,
+          username: process.env.USERNAME,
+          password: process.env.PASSWORD,
+          strictVendor: false,
+          hostVerifier: () => true,
+          ...extraOpts // spread the extra options object
+        });
+    
+        // Set a timeout for the SSH script execution
+        timeoutId = setTimeout(() => {
+          console.log('Timeout exceeded, closing SSH connection');
+          conn.end();
+          reject(new Error('SSH script execution timed out'));
+        }, timeout);
+      });
+
+
+}
+
+
+async function newgetddnewsArrayTimeoutSSHScriptssss(scripts) {
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+    let timeoutId;
+    let timeout = 10000;
+    const extraOpts = {
+      allowHalfOpen: true
+    };
+    conn.on('error', (err) => {
+      console.error('An error occurred:', err);
+      clearTimeout(timeoutId);
+      reject(err);
+    });
+
+    conn.on('ready', async function() {
+      console.log('Client :: ready');
+      const paths = process.env.HOSTPATH;
+      console.log('paths ', paths);
+
+      try {
+        for (const script of scripts) {
+          console.log(`${process.env.HOSTPATH}${script.script} ${script.params.join(' ')}`);
+          const stream = await conn.exec(`sh ${process.env.HOSTPATH}${script.script} ${script.params.join(' ')}`);
+          let output = '';
+          stream.on('data', function(data) {
+            console.log('STDOUT: ' + data);
+            output += data;
+          }).stderr.on('data', function(data) {
+            console.log('STDERR: ' + data);
+          }).on('close', async function(code) {
+            console.log('Script exited with code ' + code);
+            const jsonStartIndex = output.indexOf('{');
+            const jsonEndIndex = output.lastIndexOf('}') + 1;
+            const jsonString = output.slice(jsonStartIndex, jsonEndIndex);
+            const valueString = output.substring(jsonEndIndex).trim();
+            console.log(` TAT value ${valueString}`);
+            const match = valueString.match(/(\d+\.\d+) seconds/);
+            let totalTime;
+            if (match) {
+              totalTime = match[1];
+              console.log(`TAT new value: ${totalTime}`);
+            } else {
+              totalTime = 0;
+            }
+            try {
+              const jsonObject2 = JSON.parse(jsonString);
+              console.log('JSON is valid');
+              console.log(jsonObject2);
+              const statusMessage = jsonObject2.statusMessage;
+              console.log(`status message ${statusMessage}`);
+              const messages = jsonObject2.result.message;
+              console.log(`response message ${messages}`);
+              let post = new Post(script.afifliate, script.affcode, totalTime, statusMessage, script.transtype, messages);
+              post = await post.save();
+              console.log(post);
+            } catch (error) {
+              console.log('JSON is not valid');
+              let post = new Post(script.afifliate, script.affcode, totalTime, "Time out", script.transtype, "Time out");
+              post = await post.save();
+              console.log(post);
+            }
+            try {
+              const jsonObject = JSON.parse(output);
+              console.log('Output is valid JSON');
+              console.log(jsonObject);
+            } catch (error) {
+              console.log('Output is not valid JSON');
+            }
+          });
+        }
+        conn.on('close', () => {
+          console.log('SSH connection closed');
+          resolve();
+        });
+      } catch (err) {
+        console.log('Error executing command:', err);
+        reject(err);
+      }
+
+      // Set a timeout for the SSH script execution
+      timeoutId = setTimeout(() => {
+        console.log('Timeout exceeded, closing SSH connection');
+        conn.end();
+        reject(new Error('SSH script execution timed out'));
+      }, timeout);
+    });
+
+    conn.connect({
+      host: process.env.HOST,
+      port: process.env.SSHPORT,
+      username: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      strictVendor: false,
+      hostVerifier: () => true,
+      tryKeyboard: true,
+      ...extraOpts
+    });
+  });
+}
   // Export the functions
   module.exports = {
     
@@ -587,6 +877,9 @@ async function newgetddnewsTimeoutSSHScript(path, arrysLists, afifliate, affcode
     newgetddSSHScript : newgetddSSHScript,
     newgetddnewsSSHScript : newgetddnewsSSHScript,
     newgetddnewsSSHScriptsn : newgetddnewsSSHScriptsn,
-    newgetddnewsTimeoutSSHScript : newgetddnewsTimeoutSSHScript
+    newgetddnewsTimeoutSSHScript : newgetddnewsTimeoutSSHScript,
+    newgetddnewsArrayTimeoutSSHScript : newgetddnewsArrayTimeoutSSHScript,
+    newgetddnewsArrayTimeoutSSHScriptssss : newgetddnewsArrayTimeoutSSHScriptssss,
+    updatenewgetddnewsSSHScript : updatenewgetddnewsSSHScript
    
   }; 

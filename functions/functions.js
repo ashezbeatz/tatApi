@@ -28,18 +28,18 @@ async function getBalanace(){
       ])*/
 
       
-      await  myFunctions.newgetddnewsTimeoutSSHScript(process.env.BAL_ENG_PATH,myArrayENG,process.env.AFFILIATE_NG,process.env.AFFILIATE_CODE_NG,'balance')
+      await  myFunctions.newgetddnewsSSHScript(process.env.BAL_ENG_PATH,myArrayENG,process.env.AFFILIATE_NG,process.env.AFFILIATE_CODE_NG,'balance')
         
         //AWA
-      await  myFunctions.newgetddnewsTimeoutSSHScript(process.env.BAL_EGH_PATH,myArrayEGH,process.env.AFFILIATE_GH, process.env.AFFILIATE_CODE_GH,'balance')
-      await  myFunctions.newgetddnewsTimeoutSSHScript(process.env.BAL_EGM_PATH,arrayFunc(process.env.BAL_EGM_PAYLOAD),process.env.AFFILIATE_EGM,process.env.AFFILIATE_CODE_EGM,'balance')
-      await  myFunctions.newgetddnewsTimeoutSSHScript(process.env.BAL_ESL_PATH,arrayFunc(process.env.BAL_ESL_PAYLOAD),process.env.AFFILIATE_ESL,process.env.AFFILIATE_CODE_ESL,'balance')
+      await  myFunctions.newgetddnewsSSHScript(process.env.BAL_EGH_PATH,myArrayEGH,process.env.AFFILIATE_GH, process.env.AFFILIATE_CODE_GH,'balance')
+      await  myFunctions.newgetddnewsSSHScript(process.env.BAL_EGM_PATH,arrayFunc(process.env.BAL_EGM_PAYLOAD),process.env.AFFILIATE_EGM,process.env.AFFILIATE_CODE_EGM,'balance')
+      await  myFunctions.newgetddnewsSSHScript(process.env.BAL_ESL_PATH,arrayFunc(process.env.BAL_ESL_PAYLOAD),process.env.AFFILIATE_ESL,process.env.AFFILIATE_CODE_ESL,'balance')
       //await  myFunctions.newgetddnewsSSHScript(process.env.BAL_EGM_PATH,arrayFunc(process.env.BAL_EGM_PAYLOAD),process.env.AFFILIATE_EGM,process.env.AFFILIATE_CODE_EGM,'balance')
   
      
      
       //FWA
-      await  myFunctions.newgetddnewsSSHScript(process.env.BAL_ML_PATH,arrayFunc(process.env.BAL_ML_PAYLOAD),process.env.AFFILIATE_ML,process.env.AFFILIATE_CODE_ML,'balance')
+      //await  myFunctions.newgetddnewsSSHScript(process.env.BAL_ML_PATH,arrayFunc(process.env.BAL_ML_PAYLOAD),process.env.AFFILIATE_ML,process.env.AFFILIATE_CODE_ML,'balance')
       await  myFunctions.newgetddnewsSSHScript(process.env.BAL_BF_PATH,arrayFunc(process.env.BAL_BF_PAYLOAD),process.env.AFFILIATE_BF,process.env.AFFILIATE_CODE_BF,'balance')
       await  myFunctions.newgetddnewsSSHScript(process.env.BAL_CI_PATH,arrayFunc(process.env.BAL_CI_PAYLOAD),process.env.AFFILIATE_CI,process.env.AFFILIATE_CODE_CI,'balance')
       await  myFunctions.newgetddnewsSSHScript(process.env.BAL_SN_PATH,arrayFunc(process.env.BAL_SN_PAYLOAD),process.env.AFFILIATE_SN,process.env.AFFILIATE_CODE_SN,'balance')
