@@ -1,0 +1,118 @@
+SELECT 
+  TIME_FORMAT(
+    SEC_TO_TIME(
+      AVG(
+        CASE 
+          WHEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) <= 300 THEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) 
+          ELSE NULL 
+        END
+      )
+    ),
+    '%i:%s'
+  ) AS `5_min_avg`,
+  TIME_FORMAT(
+    SEC_TO_TIME(
+      AVG(
+        CASE 
+          WHEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) > 300 AND TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) <= 600 THEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime)
+          ELSE NULL 
+        END
+      )
+    ),
+    '%i:%s'
+  ) AS `10_min_avg`,
+  TIME_FORMAT(
+    SEC_TO_TIME(
+      AVG(
+        CASE 
+          WHEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) > 600 AND TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) <= 3600 THEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime)
+          ELSE NULL 
+        END
+      )
+    ),
+    '%i:%s'
+  ) AS `1_hour_avg`
+FROM unified_Tat;
+
+
+
+SELECT TIME_FORMAT(SEC_TO_TIME(AVG(TIMESTAMPDIFF(SECOND, start_datetime, end_datetime))), '%i:%s') AS avg_time
+FROM unified_Tat;
+------------not good
+SELECT AVG(TIMESTAMPDIFF(SECOND, start_datetime, end_datetime)) AS avg_time
+FROM unified_Tat;
+-----------------------
+SELECT DATE_FORMAT(start_datetime, '%Y-%m-%d %H:') 
+    + SEC_TO_TIME(FLOOR(TIME_TO_SEC(start_datetime) / 300) * 300) AS interval_start,
+    AVG(TIMESTAMPDIFF(SECOND, start_datetime, end_datetime)) AS avg_time
+FROM unified_Tat
+GROUP BY FLOOR(TIME_TO_SEC(start_datetime) / 300)
+ORDER BY start_datetime;
+
+
+
+------
+SELECT MAX(start_datetime), AVG(TIMESTAMPDIFF(SECOND, start_datetime, end_datetime)) AS avg_time
+FROM unified_Tat;
+
+
+SELECT
+  CASE
+    WHEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) <= 300 THEN '5 min'
+    WHEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) <= 600 THEN '10 min'
+    WHEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) <= 3600 THEN '1 hour'
+  END AS time_interval,
+  AVG(TIMESTAMPDIFF(SECOND, start_datetime, end_datetime)) AS avg_time
+FROM unified_Tat
+GROUP BY time_interval;
+
+
+
+
+----new
+SELECT
+  AVG(CASE WHEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) <= 300 THEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) END) AS '5_min_avg',
+  AVG(CASE WHEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) > 300 AND TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) <= 600 THEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) END) AS '10_min_avg',
+  AVG(CASE WHEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) > 600 AND TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) <= 3600 THEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) END) AS '1_hour_avg'
+FROM unified_Tat;
+
+
+
+--use this
+
+SELECT 
+  seviceName,
+  NOW() AS current_datetime,
+  AVG(
+    CASE
+      WHEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) <= 300 
+        AND start_datetime >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) 
+        AND end_datetime <= NOW() 
+      THEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime)
+      ELSE NULL
+    END
+  ) AS `5_min_avg`,
+  AVG(
+    CASE
+      WHEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) <= 3600 
+        AND start_datetime >= DATE_SUB(NOW(), INTERVAL 1 HOUR) 
+        AND end_datetime <= NOW() 
+      THEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime)
+      ELSE NULL
+    END
+  ) AS `1_hour_avg`,
+  AVG(
+    CASE
+      WHEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime) <= 600 
+        AND start_datetime >= DATE_SUB(NOW(), INTERVAL 10 MINUTE) 
+        AND end_datetime <= NOW() 
+      THEN TIMESTAMPDIFF(SECOND, start_datetime, end_datetime)
+      ELSE NULL
+    END
+  ) AS `10_min_avg`
+FROM unified_Tat
+GROUP BY seviceName;
+
+
+
+

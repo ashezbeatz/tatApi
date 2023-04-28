@@ -7,6 +7,7 @@ const scheduledFunctions = require('./cron');
 const fs = require('fs');
 const indexRoute = require('./routes')
 const homeRoute = require('./routes/home')
+const unifiedRoute = require('./routes/unified')
 const logerfunc = require('./functions/functions')
 
 ///const  shhclas = require('./shhconnection/ssh')//
@@ -24,6 +25,7 @@ app.use(cors());
 
 app.use(indexRoute)
 app.use(homeRoute)
+app.use(unifiedRoute)
 
 // app.get('/', function (req, res) {
     
